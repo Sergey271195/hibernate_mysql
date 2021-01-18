@@ -1,4 +1,4 @@
-package entity;
+package entity.source;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -9,7 +9,7 @@ import java.util.Objects;
 public class SourceSuperclass<T> {
 
     private T metrikaId;
-    private String name;
+    protected String name;
 
     @NaturalId
     @Column(name = "metrika_id", nullable = false, unique = true)

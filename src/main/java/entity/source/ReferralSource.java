@@ -1,19 +1,19 @@
-package entity;
+package entity.source;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "soc_network")
-public class SocialNetwork extends SourceSuperclass<String> {
+@Table(name = "ref_source")
+public class ReferralSource extends SourceSuperclass<Integer> {
 
     private long id;
 
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "soc_network_seq"
+            generator = "ref_source_seq"
     )
-    @SequenceGenerator(name = "soc_network_seq")
+    @SequenceGenerator(name = "ref_source_seq")
     public long getId() { return id; }
 
     public void setId(long id) { this.id = id; }
