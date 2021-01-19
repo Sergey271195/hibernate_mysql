@@ -18,10 +18,5 @@ public class AdvEngine extends SourceSuperclass<String> {
 
     public void setId(long id) { this.id = id; }
 
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() +
-                " [id = " + id + toStringInheritedFields();
-    }
 
 }

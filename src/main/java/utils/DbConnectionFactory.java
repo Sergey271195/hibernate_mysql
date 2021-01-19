@@ -14,6 +14,10 @@ public class DbConnectionFactory {
         MetadataSources metadataSources = new MetadataSources(serviceRegistry);
         EntityClassRegistry.ENTITY_SOURCE_CLASS_REGISTRY.forEach(metadataSources::addAnnotatedClass);
         EntityClassRegistry.ENTITY_MAIN_CLASS_REGISTRY.forEach(metadataSources::addAnnotatedClass);
+        EntityClassRegistry.ENTITY_GOAL_REACHES_REGISTRY.forEach(metadataSources::addAnnotatedClass);
+        EntityClassRegistry.ENTITY_VIEW_REACHES_REGISTRY.forEach(metadataSources::addAnnotatedClass);
+        EntityClassRegistry.ENTITY_PRICE_REACHES_REGISTRY.forEach(metadataSources::addAnnotatedClass);
+        EntityClassRegistry.ENTITY_PURCHASE_REACHES_REGISTRY.forEach(metadataSources::addAnnotatedClass);
         return metadataSources.buildMetadata().buildSessionFactory();
     }
 

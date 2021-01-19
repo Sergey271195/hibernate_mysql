@@ -27,12 +27,12 @@ public class Counter {
     private LocalDate creationDate;
 
     private String name;
-    @Column(columnDefinition = "boolean default false")
+    @Column(columnDefinition = "bit(1) default 0")
     private boolean commercial;
-    @Column(columnDefinition = "boolean default true")
+    @Column(columnDefinition = "bit(1) default 1")
     private boolean relevant;
 
-    @OneToMany(mappedBy = "counter")
+    @OneToMany(mappedBy = "counter", fetch = FetchType.LAZY)
     private Set<Goal> goals;
 
     @Override

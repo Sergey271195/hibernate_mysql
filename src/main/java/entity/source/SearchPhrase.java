@@ -19,10 +19,5 @@ public class SearchPhrase extends SourceSuperclass<Integer> {
 
     public void setId(long id) { this.id = id; }
 
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() +
-                " [id = " + id + toStringInheritedFields();
-    }
 
 }

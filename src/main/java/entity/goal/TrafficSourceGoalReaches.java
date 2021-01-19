@@ -1,25 +1,27 @@
 package entity.goal;
 
-import entity.source.AdvEngine;
+import entity.goal.GoalReachesSuperclass;
+import entity.source.TrafficSource;
 
 import javax.persistence.*;
 
 @Entity
 @Table(
-        name = "adv_engine_goal",
+        name = "traff_source_goal",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"goalid", "sourceid", "date"})}
 )
-public class AdvEngineGoalReaches extends GoalReachesSuperclass<AdvEngine> {
+public class TrafficSourceGoalReaches extends GoalReachesSuperclass<TrafficSource> {
 
     private long id;
 
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "adv_engine_goal_seq"
+            generator = "traffic_source_goal_seq"
     )
-    @SequenceGenerator(name = "adv_engine_goal_seq")
+    @SequenceGenerator(name = "traffic_source_goal_seq")
     public long getId() { return id; }
+
     public void setId(long id) { this.id = id; }
 
 }

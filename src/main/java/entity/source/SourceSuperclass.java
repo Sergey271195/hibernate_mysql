@@ -1,6 +1,7 @@
 package entity.source;
 
 import org.hibernate.annotations.NaturalId;
+import utils.StandardMethodGenerator;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -21,9 +22,8 @@ public class SourceSuperclass<T> {
 
     public void setName(String name) { this.name = name; }
 
-    public String toStringInheritedFields() {
-        return ", metrika_id = " + metrikaId + ", name = " + name + ']';
-    }
+    @Override
+    public String toString() { return StandardMethodGenerator.generateToStringMethod(this); }
 
     @Override
     public boolean equals(Object o) {

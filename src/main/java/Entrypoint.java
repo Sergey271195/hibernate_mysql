@@ -1,4 +1,6 @@
+import entity.goal.AdvEngineGoalReaches;
 import entity.main.Counter;
+import entity.source.AdvEngine;
 import entity.source.SearchEngine;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +15,8 @@ public class Entrypoint {
 
 
         SearchEngine searchEngine = new SearchEngine();
+        searchEngine.setName("organic");
+        searchEngine.setMetrikaId("RORJDS");
         System.out.println(StandardMethodGenerator.generateToStringMethod(searchEngine));
 
         Counter newCounter = new Counter();
