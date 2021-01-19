@@ -13,9 +13,9 @@ public class SourceSuperclass<T> {
 
     @NaturalId
     @Column(name = "metrika_id", nullable = false, unique = true)
-    private T getMetrikaId() {return metrikaId;}
+    public T getMetrikaId() {return metrikaId;}
 
-    private void setMetrikaId(T metrikaId) {this.metrikaId = metrikaId;}
+    public void setMetrikaId(T metrikaId) {this.metrikaId = metrikaId;}
 
     public String getName() { return name; }
 
