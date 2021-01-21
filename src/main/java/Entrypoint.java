@@ -7,6 +7,7 @@ import exceptions.FetchException;
 import handlers.counter.CounterHandler;
 import handlers.fetcher.Fetchable;
 import handlers.fetcher.FetcherImpl;
+import handlers.goal.GoalHandler;
 import handlers.parser.JsonParser;
 import handlers.parser.JsonParserImpl;
 import org.hibernate.Session;
@@ -24,8 +25,15 @@ public class Entrypoint {
 
         JsonParser parser = new JsonParserImpl();
         Fetchable fetcher = new FetcherImpl();
-        CounterHandler counterHandler = new CounterHandler(fetcher, parser);
-        counterHandler.refreshCounters();
+
+        Counter testCounter = new Counter();
+        testCounter.setId(62401888L);
+
+        GoalHandler goalHandler = new GoalHandler(fetcher, parser);
+        goalHandler.refreshGoals(testCounter);
+
+        //CounterHandler counterHandler = new CounterHandler(fetcher, parser);
+        //counterHandler.refreshCounters();
 
         /*SessionFactory sessionFactory = DbConnectionFactory.getSessionFactory();
 

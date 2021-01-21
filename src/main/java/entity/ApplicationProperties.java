@@ -9,7 +9,8 @@ import java.util.Set;
 
 public class ApplicationProperties {
 
-    public static String METRIC_TOKEN = System.getenv("METRIC_TOKEN");
+    public static String METRIC_TOKEN = "AgAAAAANlc-jAAZlTcKTKqnOw00avXvI_402vGg";
+            //System.getenv("METRIC_TOKEN");
 
     public static String JANDEX_STAT_BY_TIME = "https://api-metrika.yandex.net/stat/v1/data/bytime?ids=";
     public static String GOAL_BASE_URI = "https://api-metrika.yandex.net/management/v1/counter/";

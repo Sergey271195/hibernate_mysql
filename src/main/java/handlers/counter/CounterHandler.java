@@ -4,7 +4,6 @@ import dao.CounterDao;
 import entity.ApplicationProperties;
 import entity.main.Counter;
 import exceptions.FetchException;
-import exceptions.JsonParseException;
 import handlers.BaseRequestHandler;
 import handlers.fetcher.Fetchable;
 import handlers.parser.JsonParser;
