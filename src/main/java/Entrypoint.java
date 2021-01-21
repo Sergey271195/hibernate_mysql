@@ -27,6 +27,8 @@ public class Entrypoint {
         CounterHandler counterHandler = new CounterHandler(fetcher, parser);
         counterHandler.refreshCounters();
 
+
+
         /*SessionFactory sessionFactory = DbConnectionFactory.getSessionFactory();
 
         Session session = sessionFactory.openSession();

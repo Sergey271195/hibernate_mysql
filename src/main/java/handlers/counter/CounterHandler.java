@@ -4,7 +4,6 @@ import dao.CounterDao;
 import entity.ApplicationProperties;
 import entity.main.Counter;
 import exceptions.FetchException;
-import exceptions.JsonParseException;
 import handlers.BaseRequestHandler;
 import handlers.fetcher.Fetchable;
 import handlers.parser.JsonParser;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class CounterHandler extends BaseRequestHandler {
@@ -28,7 +28,7 @@ public class CounterHandler extends BaseRequestHandler {
 
     public void refreshCounters() {
         doInTransaction(() -> {
-            Set<Long> relevantCounterIds = getRelevantCountersFromDB();
+            Map<Long, Counter> relevantCounterIds = getRelevantCountersFromDB();
             System.out.println("[RELEVANT COUNTERS] " + relevantCounterIds);
             updateOrCreateCounters(relevantCounterIds);
             updateRelevancy();
@@ -42,7 +42,7 @@ public class CounterHandler extends BaseRequestHandler {
         return countersData;
     }
 
-    private void updateOrCreateCounters(Set<Long> relevantCounterIds) {
+    private void updateOrCreateCounters(Map<Long, Counter> relevantCounterIds) {
         try {
             var countersData = fetchCountersFromMetrics();
             countersData.stream().map(CounterHandler::createCounter)
@@ -53,11 +53,10 @@ public class CounterHandler extends BaseRequestHandler {
         }
     }
 
-    private void createOrUpdateCounter(Set<Long> relevantCounters, Counter counter) {
-        if ( relevantCounters.contains(counter.getMetrikaId()) ) {
+    private void createOrUpdateCounter(Map<Long, Counter> relevantCounters, Counter counter) {
+        if ( relevantCounters.keySet().contains(counter.getMetrikaId()) ) {
             System.out.println("[UPDATING COUNTER] " + counter);
-            Long id = counterDao.getByMetrikaId(counter.getMetrikaId()).getId();
-            counter.setId(id);
+            Counter updateCounter = relevantCounters.get(counter.getMetrikaId());
             counterDao.update(counter);
         } else {
             System.out.println("[SAVING COUNTER] " + counter);
@@ -67,6 +66,11 @@ public class CounterHandler extends BaseRequestHandler {
 
     private static Counter createCounter(Map<String, Object> counterData) {
         Counter counter = new Counter();
+        updateCounter(counterData, counter);
+        return counter;
+    }
+
+    private static Counter updateCounter(Map<String, Object> counterData, Counter counter) {
         counter.setMetrikaId(getMetrikaId(counterData));
         counter.setName(getName(counterData));
         counter.setCounterUrl(getCounterUrl(counterData));
@@ -76,14 +80,13 @@ public class CounterHandler extends BaseRequestHandler {
         return counter;
     }
 
-    private Set<Long> getRelevantCountersFromDB() {
+    private Map<Long, Counter> getRelevantCountersFromDB() {
         return doInTransaction(() -> {
-            Set<Long> dbCounters = ApplicationProperties.relevantCounters.stream()
+            Map<Long, Counter> dbCounters = ApplicationProperties.relevantCounters.stream()
                     .map(counterId -> counterDao.getByMetrikaId(counterId))
                     .filter(Objects::nonNull)
                     .filter(ApplicationProperties::isRelevant)
-                    .map(Counter::getMetrikaId)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toMap(Counter::getMetrikaId, Function.identity()));
             return dbCounters;
         });
     }
