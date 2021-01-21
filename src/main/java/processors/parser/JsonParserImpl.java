@@ -1,4 +1,4 @@
-package handlers.parser;
+package processors.parser;
 
 import exceptions.JsonParseException;
 import org.json.simple.parser.JSONParser;

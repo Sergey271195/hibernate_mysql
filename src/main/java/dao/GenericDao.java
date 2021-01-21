@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class GenericDao {
 
@@ -16,6 +17,12 @@ public class GenericDao {
     public <T> T get(Class<T> clazz, Serializable id) { return getSession().get(clazz, id); }
 
     public <T> T merge(Object object) { return (T) getSession().merge(object); }
+
+    public <T> List<T> getAll(Class<T> clazz) {
+        return getSession()
+                .createQuery("From " + clazz.getSimpleName(), clazz)
+                .getResultList();
+    }
 
     public void update (Object obj) {
         if (obj == null) {

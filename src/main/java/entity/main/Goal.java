@@ -18,6 +18,9 @@ public class Goal {
     private String name;
     private String type;
 
+    @Column(columnDefinition = "bit(1) default 1")
+    private boolean relevant;
+
     @ManyToOne
     @JoinColumn(name = "counter")
     private Counter counter;
@@ -78,4 +81,8 @@ public class Goal {
     public void setMetrikaId(long metrikaId) {
         this.metrikaId = metrikaId;
     }
+
+    public boolean isRelevant() { return relevant; }
+
+    public void setRelevant(boolean relevant) { this.relevant = relevant; }
 }

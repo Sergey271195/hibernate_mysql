@@ -1,4 +1,4 @@
-package handlers.fetcher;
+package processors.fetcher;
 
 import exceptions.FetchException;
 

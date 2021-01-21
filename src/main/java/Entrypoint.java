@@ -1,22 +1,17 @@
-import entity.ApplicationProperties;
-import entity.goal.AdvEngineGoalReaches;
 import entity.main.Counter;
-import entity.source.AdvEngine;
-import entity.source.SearchEngine;
-import exceptions.FetchException;
+import entity.main.Goal;
+import handlers.BaseSessionHandler;
 import handlers.counter.CounterHandler;
-import handlers.fetcher.Fetchable;
-import handlers.fetcher.FetcherImpl;
+import handlers.goal.GoalFiller;
 import handlers.goal.GoalHandler;
-import handlers.parser.JsonParser;
-import handlers.parser.JsonParserImpl;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
+import processors.RequestProcessor;
+import processors.parser.JsonParserImpl;
+import processors.fetcher.FetcherImpl;
+import processors.fetcher.Fetchable;
+import processors.parser.JsonParser;
 import utils.DbConnectionFactory;
-import utils.StandardMethodGenerator;
-
-import java.util.Map;
 
 
 public class Entrypoint {
@@ -25,26 +20,15 @@ public class Entrypoint {
 
         JsonParser parser = new JsonParserImpl();
         Fetchable fetcher = new FetcherImpl();
+        RequestProcessor requestProcessor = new RequestProcessor(parser, fetcher);
 
-        Counter testCounter = new Counter();
-        testCounter.setId(62401888L);
+        GoalFiller filler = new GoalFiller(requestProcessor);
+        filler.fill();
 
-        GoalHandler goalHandler = new GoalHandler(fetcher, parser);
-        goalHandler.refreshGoals(testCounter);
+        //FOR COUNTERS UPDATES
+        /*CounterHandler counterHandler = new CounterHandler(requestProcessor);
+        counterHandler.refreshCounters();*/
 
-        //CounterHandler counterHandler = new CounterHandler(fetcher, parser);
-        //counterHandler.refreshCounters();
-
-
-
-        /*SessionFactory sessionFactory = DbConnectionFactory.getSessionFactory();
-
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        Query query = session.createQuery("FROM AdvEngine");
-        query.getResultList().forEach(r -> System.out.println(r));
-        session.getTransaction().commit();
-        session.close();*/
     }
 
 }

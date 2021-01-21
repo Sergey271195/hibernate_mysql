@@ -5,15 +5,12 @@ import entity.ApplicationProperties;
 import entity.main.Counter;
 import exceptions.FetchException;
 import handlers.BaseRequestHandler;
-import handlers.fetcher.Fetchable;
-import handlers.parser.JsonParser;
+import processors.RequestProcessor;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -21,109 +18,104 @@ public class CounterHandler extends BaseRequestHandler {
 
     CounterDao counterDao;
 
-    public CounterHandler(Fetchable fetcher, JsonParser parser) {
-        super(fetcher, parser);
+    public CounterHandler(RequestProcessor requestProcessor) {
+        super(requestProcessor);
         counterDao = new CounterDao(sessionFactory);
     }
 
     public void refreshCounters() {
         doInTransaction(() -> {
-            Map<Long, Counter> relevantCounterIds = getRelevantCountersFromDB();
-            System.out.println("[RELEVANT COUNTERS] " + relevantCounterIds);
-            updateOrCreateCounters(relevantCounterIds);
-            updateRelevancy();
+            Map<Long, Counter> dbCounters = getCountersFromDb();
+            createOrUpdateCounters(dbCounters);
         });
     }
 
-    private List<Map<String, Object>> fetchCountersFromMetrics() throws FetchException {
-        String countersResponse = fetcher.fetch(ApplicationProperties.COUNTERS_URI);
-        Map<String, Object> countersMap = parser.parse(countersResponse);
-        var countersData = (List<Map<String, Object>>) countersMap.get("counters");
-        return countersData;
+    private Map<Long, Counter> getCountersFromDb() {
+        return doInTransaction(() -> {
+            List<Counter> dbCounters = getSession()
+                    .createQuery("From Counter", Counter.class)
+                    .getResultList();
+            Map<Long, Counter> dbCountersMap = dbCounters.stream()
+                    .peek(CounterHandler::updateRelevancy)
+                    .collect(Collectors.toMap(
+                            Counter::getMetrikaId, Function.identity())
+                    );
+            return dbCountersMap;
+        });
     }
 
-    private void updateOrCreateCounters(Map<Long, Counter> relevantCounterIds) {
+    private static void updateRelevancy(Counter counter) {
+        counter.setRelevant(
+                ApplicationProperties.relevantCounters.contains(counter.getMetrikaId())
+        );
+    }
+
+    private void createOrUpdateCounters(Map<Long, Counter> dbCounters) {
         try {
-            var countersData = fetchCountersFromMetrics();
-            countersData.stream().map(CounterHandler::createCounter)
-                    .filter(Counter::isRelevant)
-                    .forEach(counter -> createOrUpdateCounter(relevantCounterIds, counter));
+            var countersData = getCountersFromMetrika();
+            countersData.stream()
+                    .filter(CounterRequestParser::counterIsRelevant)
+                    .forEach(counterData ->
+                            createOrUpdateCounter(dbCounters, counterData)
+                    );
         } catch (FetchException err) {
             System.out.println("[FETCHING COUNTERS FROM METRIKA ERROR] " + err.getMessage());
         }
     }
 
-    private void createOrUpdateCounter(Map<Long, Counter> relevantCounters, Counter counter) {
-        if ( relevantCounters.keySet().contains(counter.getMetrikaId()) ) {
-            System.out.println("[UPDATING COUNTER] " + counter);
-            Counter updateCounter = relevantCounters.get(counter.getMetrikaId());
-            counterDao.update(counter);
-        } else {
-            System.out.println("[SAVING COUNTER] " + counter);
-            counterDao.save(counter);
-        }
+    private List<Map<String, Object>> getCountersFromMetrika() throws FetchException {
+        Map<String, Object>  responseData = requestProcessor.process(ApplicationProperties.COUNTERS_URI);
+        return (List<Map<String, Object>>) responseData.get("counters");
     }
 
-    private static Counter createCounter(Map<String, Object> counterData) {
+    private Counter createOrUpdateCounter(Map<Long, Counter> dbCounters, Map<String, Object> counterData) {
+        Long metrikaId = CounterRequestParser.getMetrikaId(counterData);
+        return dbCounters.containsKey(metrikaId)
+                ? updateCounter(counterData, dbCounters.get(metrikaId))
+                : createCounter(counterData);
+    }
+
+    private Counter updateCounter(Map<String, Object> counterData, Counter counter) {
+        counter.setMetrikaId(CounterRequestParser.getMetrikaId(counterData));
+        counter.setName(CounterRequestParser.getName(counterData));
+        counter.setCounterUrl(CounterRequestParser.getCounterUrl(counterData));
+        counter.setCreationDate(CounterRequestParser.getCreationDate(counterData));
+        counter.setCommercial(CounterRequestParser.isCommercial(counterData) == 1L);
+        counter.setRelevant(CounterRequestParser.counterIsRelevant(counterData));
+        return counter;
+    }
+
+    private Counter createCounter(Map<String, Object> counterData) {
         Counter counter = new Counter();
         updateCounter(counterData, counter);
+        counterDao.save(counter);
         return counter;
     }
 
-    private static Counter updateCounter(Map<String, Object> counterData, Counter counter) {
-        counter.setMetrikaId(getMetrikaId(counterData));
-        counter.setName(getName(counterData));
-        counter.setCounterUrl(getCounterUrl(counterData));
-        counter.setCreationDate(getCreationDate(counterData));
-        counter.setCommercial(isCommercial(counterData) == 1L);
-        counter.setRelevant(isRelevant(counterData));
-        return counter;
-    }
+}
 
-    private Map<Long, Counter> getRelevantCountersFromDB() {
-        return doInTransaction(() -> {
-            Map<Long, Counter> dbCounters = ApplicationProperties.relevantCounters.stream()
-                    .map(counterId -> counterDao.getByMetrikaId(counterId))
-                    .filter(Objects::nonNull)
-                    .filter(ApplicationProperties::isRelevant)
-                    .collect(Collectors.toMap(Counter::getMetrikaId, Function.identity()));
-            return dbCounters;
-        });
-    }
-
-    private void updateRelevancy() {
-        doInTransaction(() -> {
-           ApplicationProperties.relevantCounters.stream()
-                    .map(counterId -> counterDao.getByMetrikaId(counterId))
-                    .filter(Objects::nonNull)
-                    .filter(ApplicationProperties::isNotRelevant)
-                    .forEach(counter -> counter.setRelevant(false));
-        });
-    }
-
-    private static long isCommercial(Map<String, Object> counterData) {
+class CounterRequestParser {
+    public static long isCommercial(Map<String, Object> counterData) {
         return (Long) ((Map) counterData.get("code_options")).get("ecommerce");
     }
 
-    private static Long getMetrikaId(Map<String, Object> counterData) {
+    public static Long getMetrikaId(Map<String, Object> counterData) {
         return (Long) counterData.get("id");
     }
 
-    private static String getName(Map<String, Object> counterData) {
+    public static String getName(Map<String, Object> counterData) {
         return (String) counterData.get("name");
     }
 
-    private static String getCounterUrl(Map<String, Object> counterData) {
+    public static String getCounterUrl(Map<String, Object> counterData) {
         return (String) counterData.get("site");
     }
 
-    private static LocalDate getCreationDate(Map<String, Object> counterData) {
+    public static LocalDate getCreationDate(Map<String, Object> counterData) {
         return ZonedDateTime.parse((String) counterData.get("create_time")).toLocalDate();
     }
 
-    private static boolean isRelevant(Map<String, Object> counterData) {
+    public static boolean counterIsRelevant(Map<String, Object> counterData) {
         return ApplicationProperties.relevantCounters.contains(getMetrikaId(counterData));
     }
-
-
 }
