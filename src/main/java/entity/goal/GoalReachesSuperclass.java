@@ -3,6 +3,7 @@ package entity.goal;
 import entity.ReachesSuperclass;
 import entity.main.Goal;
 import entity.source.SourceSuperclass;
+import utils.StandardMethodGenerator;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,6 +20,11 @@ public class GoalReachesSuperclass<T extends SourceSuperclass> extends ReachesSu
     @JoinColumn(name = "goalid")
     public Goal getGoal() {
         return goal;
+    }
+
+    @Override
+    public String toString() {
+        return StandardMethodGenerator.generateToStringMethod(this);
     }
 
     @Override

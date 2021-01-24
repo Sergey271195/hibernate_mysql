@@ -1,6 +1,7 @@
 package entity.source;
 
 import javax.persistence.*;
+import java.util.Map;
 
 @Entity
 @Table(name = "soc_network")
@@ -18,4 +19,8 @@ public class SocialNetwork extends SourceSuperclass<String> {
 
     public void setId(long id) { this.id = id; }
 
+    @Override
+    public SocialNetwork createSourceFromMetrikData(Map<String, String> sourceData) {
+        return SourceSuperclass.createSource(sourceData, this);
+    }
 }

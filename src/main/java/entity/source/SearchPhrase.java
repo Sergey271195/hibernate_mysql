@@ -1,6 +1,7 @@
 package entity.source;
 
 import javax.persistence.*;
+import java.util.Map;
 
 @Entity
 @Table(name = "search_phrase")
@@ -19,5 +20,9 @@ public class SearchPhrase extends SourceSuperclass<Integer> {
 
     public void setId(long id) { this.id = id; }
 
+    @Override
+    public SearchPhrase createSourceFromMetrikData(Map<String, String> sourceData) {
+        return SourceSuperclass.createSource(sourceData, this);
+    }
 
 }

@@ -26,27 +26,36 @@ public class GoalHandler extends BaseRequestHandler {
     public void refreshGoals() {
         doInTransaction(() -> {
             try {
-                List<Map<String, Object>> responseData = fetchGoalsData(counter);
-                Map<Long, Goal> dbGoals = counter.getGoals().stream()
-                        .collect(Collectors.toMap(
-                                Goal::getMetrikaId, Function.identity()
-                        ));
-                responseData.stream()
-                        .filter(goalData ->
-                                !dbGoals.containsKey(GoalRequestParser.getMetriakId(goalData))
-                        ).map(this::createGoal)
-                        .forEach(goal -> System.out.println(goal));
+                List<Map<String, Object>> responseData = fetchGoalsFromMetirka(counter);
+                Map<Long, Goal> dbGoals = putDbGoalsToMap(counter);
+                persistNewGoals(responseData, dbGoals);
             } catch (FetchException err) {
                 System.out.println("[FETCHING GOALS FROM METRIKA ERROR] " + err.getMessage());
             }
         });
     }
     
-    private List<Map<String, Object>> fetchGoalsData(Counter counter) throws FetchException {
+    private List<Map<String, Object>> fetchGoalsFromMetirka(Counter counter) throws FetchException {
         Map<String, Object> goalsData = requestProcessor.process(
                 ApplicationProperties.GOAL_BASE_URI + counter.getMetrikaId() + "?field=goals"
         );
         return (List<Map<String, Object>>) ((Map) goalsData.get("counter")).get("goals");
+    }
+
+    private Map<Long, Goal> putDbGoalsToMap(Counter counter) {
+        return counter.getGoals().stream()
+                    .peek(goal -> System.out.println(goal))
+                    .collect(Collectors.toMap(
+                            Goal::getMetrikaId, Function.identity()
+                    ));
+    }
+
+    private void persistNewGoals(List<Map<String, Object>> responseData, Map<Long, Goal> dbGoals) {
+        responseData.stream()
+                .filter(goalData ->
+                        !dbGoals.containsKey(GoalRequestParser.getMetriakId(goalData))
+                ).map(this::createGoal)
+                .forEach(goal -> System.out.println("Persisted new goal: " + goal));
     }
 
     private Goal createGoal(Map<String, Object> goalData) {
@@ -60,7 +69,6 @@ public class GoalHandler extends BaseRequestHandler {
         return goal;
     }
 
-    
 }
 
 class GoalRequestParser {

@@ -1,6 +1,7 @@
 package entity.source;
 
 import javax.persistence.*;
+import java.util.Map;
 
 @Entity
 @Table(name = "adv_engine")
@@ -18,5 +19,8 @@ public class AdvEngine extends SourceSuperclass<String> {
 
     public void setId(long id) { this.id = id; }
 
-
+    @Override
+    public AdvEngine createSourceFromMetrikData(Map<String, String> sourceData) {
+        return SourceSuperclass.createSource(sourceData, this);
+    }
 }

@@ -1,5 +1,6 @@
 package entity.main;
 
+import org.hibernate.annotations.NaturalId;
 import utils.StandardMethodGenerator;
 
 import javax.persistence.*;
@@ -13,8 +14,10 @@ public class Goal {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
+    @NaturalId
     @Column(name = "metrika_id")
     private long metrikaId;
+
     private String name;
     private String type;
 

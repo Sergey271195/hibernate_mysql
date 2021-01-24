@@ -1,6 +1,7 @@
 package entity.source;
 
 import javax.persistence.*;
+import java.util.Map;
 
 @Entity
 @Table(name = "ref_source")
@@ -18,5 +19,8 @@ public class ReferralSource extends SourceSuperclass<Integer> {
 
     public void setId(long id) { this.id = id; }
 
-
+    @Override
+    public ReferralSource createSourceFromMetrikData(Map<String, String> sourceData) {
+        return SourceSuperclass.createSource(sourceData, this);
+    }
 }

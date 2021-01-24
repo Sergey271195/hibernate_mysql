@@ -1,13 +1,16 @@
 package com.illuminator;
 
+import handlers.BaseSessionHandler;
+import processors.RequestProcessor;
 import processors.fetcher.Fetchable;
 import processors.fetcher.FetcherImpl;
 import processors.parser.JsonParser;
 import processors.parser.JsonParserImpl;
 
-public class BaseTest {
+public class BaseTest extends BaseSessionHandler {
 
-    protected JsonParser parser = new JsonParserImpl();
-    protected Fetchable fetcher = new FetcherImpl();
+    private final JsonParser jsonParser = new JsonParserImpl();
+    private final Fetchable fetcher = new FetcherImpl();
+    protected final RequestProcessor requestProcessor = new RequestProcessor(jsonParser, fetcher);
 
 }

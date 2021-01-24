@@ -4,10 +4,11 @@ import org.hibernate.annotations.NaturalId;
 import utils.StandardMethodGenerator;
 
 import javax.persistence.*;
+import java.util.Map;
 import java.util.Objects;
 
 @MappedSuperclass
-public class SourceSuperclass<T> {
+public abstract class SourceSuperclass<T> {
 
     private T metrikaId;
     protected String name;
@@ -21,6 +22,19 @@ public class SourceSuperclass<T> {
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
+
+    public abstract SourceSuperclass createSourceFromMetrikData(Map<String, String> sourceData);
+
+    protected static <T extends SourceSuperclass> T createSource(
+            Map<String, String> sourceData, T sourceInstance
+    ) {
+        String name = sourceData.get("name");
+        String metrikaId = sourceData.get("id");
+        Object metrikaNaturalId = metrikaId == null ? Objects.hash(name) : sourceData.get("id");
+        sourceInstance.setName(name);
+        sourceInstance.setMetrikaId(metrikaNaturalId);
+        return sourceInstance;
+    }
 
     @Override
     public String toString() { return StandardMethodGenerator.generateToStringMethod(this); }

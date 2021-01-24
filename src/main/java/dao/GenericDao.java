@@ -24,6 +24,10 @@ public class GenericDao {
                 .getResultList();
     }
 
+    public <T> T getByMetrikaId(Class<T> clazz, Serializable metrikaId) {
+        return getSession().bySimpleNaturalId(clazz).load(metrikaId);
+    }
+
     public void update (Object obj) {
         if (obj == null) {
             return;
