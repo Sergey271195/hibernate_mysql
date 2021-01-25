@@ -1,6 +1,5 @@
 package handlers.reaches.goal;
 
-import com.mysql.cj.xdevapi.AddResultImpl;
 import entity.ApplicationProperties;
 import entity.main.Counter;
 import entity.main.Goal;
@@ -63,7 +62,12 @@ public class GoalsRequestBuilder {
     }
 
     private String buildRequest(String goalsRequest) {
-        LocalDate fillStartDate = getStartDate(counter);
+        String requestBase = buildRequestBase(goalsRequest);
+        //if (dimension.contains("ReferalSource") || dimension.contains("SearchPhrase")) {
+            return ApplicationProperties.JANDEX_DRILLDOWN + requestBase;
+        //}
+        //return ApplicationProperties.JANDEX_STAT_BY_TIME + requestBase;
+        /*LocalDate fillStartDate = getStartDate(counter);
         StringBuilder requestBuilder = new StringBuilder();
         requestBuilder.append(ApplicationProperties.JANDEX_STAT_BY_TIME)
                 .append(counter.getMetrikaId())
@@ -71,7 +75,19 @@ public class GoalsRequestBuilder {
                 .append("&dimensions=ym:s:lastsign").append(dimension)
                 .append("&group=day").append("&limit=").append(REQUEST_LIMIT)
                 .append("&date1=").append(fillStartDate)
-                .append("&date2=").append("2021-01-21");
+                .append("&date2=").append("2021-01-24");
+        return requestBuilder.toString();*/
+    }
+
+    private String buildRequestBase(String goalsRequest) {
+        LocalDate fillStartDate = getStartDate(counter);
+        StringBuilder requestBuilder = new StringBuilder();
+        requestBuilder.append(counter.getMetrikaId())
+                .append("&metrics=").append(goalsRequest)
+                .append("&dimensions=ym:s:lastsign").append(dimension).append(",ym:s:datePeriodday")
+                .append("&group=day").append("&limit=").append(REQUEST_LIMIT)
+                .append("&date1=").append(fillStartDate)
+                .append("&date2=").append("2021-01-24");
         return requestBuilder.toString();
     }
 

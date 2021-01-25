@@ -8,6 +8,7 @@ import entity.main.Goal;
 import entity.source.SourceSuperclass;
 import handlers.BaseSessionHandler;
 import handlers.requestparsers.ByTimeRequestParser;
+import handlers.requestparsers.DimensionsProperties;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -22,13 +23,13 @@ public class GoalsDbFiller extends BaseSessionHandler {
     private final GoalDao goalDao = new GoalDao(sessionFactory);
     private final SourceDao sourceDao = new SourceDao(sessionFactory);
 
-    private final Class<? extends GoalReachesSuperclass> insertTable = SearchEngineGoalReaches.class;
+    private final Class<? extends GoalReachesSuperclass> insertTable;
     private List<Goal> goals;
 
     public GoalsDbFiller(ByTimeRequestParser requestParser) {
-        System.out.println("Request parser here: ");
-        System.out.println(requestParser);
         this.requestParser = requestParser;
+        insertTable = DimensionsProperties.insertTableRegistry.get(requestParser.dimension);
+        System.out.println("InsertTableClass: " + insertTable.getSimpleName());
         goals = mapMetricsToGoals();
     }
 
@@ -64,13 +65,16 @@ public class GoalsDbFiller extends BaseSessionHandler {
             Goal goal = goals.get(i);
             System.out.println(goal);
             for (int j = 0; j < reachesList.size(); j++) {
-                GoalReachesSuperclass reachesSuperclass = getTableRowInstance();
-                reachesSuperclass.setGoal(goal);
-                reachesSuperclass.setDate(requestParser.timeIntervals.get(j));
-                reachesSuperclass.setCounter(goal.getCounter());
-                reachesSuperclass.setSourceSuperclass(source);
+                if (reachesList.get(j) != 0.0) {
+                    GoalReachesSuperclass reachesSuperclass = getTableRowInstance();
+                    reachesSuperclass.setGoal(goal);
+                    reachesSuperclass.setDate(requestParser.timeIntervals.get(j));
+                    reachesSuperclass.setCounter(goal.getCounter());
+                    reachesSuperclass.setSourceSuperclass(source);
+                    reachesSuperclass.setReaches(reachesList.get(j));
+                    sourceDao.save(reachesSuperclass);
+                }
             }
-
         }
 
     }
