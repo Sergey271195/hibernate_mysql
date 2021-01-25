@@ -1,13 +1,14 @@
 package handlers.reaches.goal;
 
-import handlers.requestparsers.DataRequestParser;
+import handlers.requestparsers.ByTimeRequestParser;
+import handlers.requestparsers.DrilldownRequestParser;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class GoalsRequestParser extends DataRequestParser {
+public class GoalsRequestParser extends ByTimeRequestParser {
 
     public final List<LocalDate> timeIntervals;
 
