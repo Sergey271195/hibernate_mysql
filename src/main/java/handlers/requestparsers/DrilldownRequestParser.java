@@ -40,7 +40,8 @@ public class DrilldownRequestParser extends QueryRequestParser {
     private Map<String, Object> appendParentToSubRequest(Map dimension) {
         Map newMap = new HashMap();
         String parentIdName = returnDimensionIdName(dimension);
-        String subRequest = subRequestBase + "&parent_id=" + "[%22" + parentIdName.replace(" ", "%20") +"%22]";
+        String subRequest = subRequestBase + "&parent_id=" + "[%22" +
+                parentIdName.replace(" ", "%20").replace("+", "%2B") +"%22]";
         newMap.put("request", subRequest);
         newMap.put("dimensions", dimension);
         return newMap;

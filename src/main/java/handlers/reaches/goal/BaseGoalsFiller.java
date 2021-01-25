@@ -18,7 +18,7 @@ public class BaseGoalsFiller extends BaseRequestHandler {
     public void fillCounter(Counter counter) {
         System.out.println("Filling Goals for counter: " + counter.getMetrikaId());
         List<String> goalsMetrikaRequest =
-                new GoalsRequestBuilder(counter, "SearchPhrase").createRequest();
+                new GoalsRequestBuilder(counter, "SearchEngineRoot").createRequest();
 
         goalsMetrikaRequest.stream()
                 .filter(Objects::nonNull)
