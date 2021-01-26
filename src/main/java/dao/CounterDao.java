@@ -31,4 +31,8 @@ public class CounterDao extends GenericDao {
         .getSingleResult();
     }
 
+    public Counter getByMetrikaId(Long metrikaId) {
+        return getByMetrikaId(Counter.class, metrikaId);
+    }
+
 }

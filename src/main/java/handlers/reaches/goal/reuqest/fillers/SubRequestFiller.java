@@ -1,9 +1,11 @@
-package handlers.reaches.goal;
+package handlers.reaches.goal.reuqest.fillers;
 
+import dao.CounterDao;
 import dao.GoalDao;
 import dao.ReachesDao;
 import dao.SourceDao;
 import entity.goal.GoalReachesSuperclass;
+import entity.main.Counter;
 import entity.main.Goal;
 import entity.source.SourceSuperclass;
 import handlers.BaseSessionHandler;
@@ -18,11 +20,11 @@ import java.util.stream.IntStream;
 public class SubRequestFiller extends BaseSessionHandler {
 
     private final SubRequestParser subRequestParser;
-    private final GoalDao goalDao = new GoalDao(sessionFactory);
     private final SourceDao sourceDao = new SourceDao(sessionFactory);
     private final ReachesDao reachesDao = new ReachesDao(sessionFactory);
     private final List<Goal> goals;
     private SourceSuperclass source;
+    private Counter counter;
 
     public SubRequestFiller(SubRequestParser subRequestParser) {
         this.subRequestParser = subRequestParser;
@@ -31,6 +33,7 @@ public class SubRequestFiller extends BaseSessionHandler {
 
     public void fill() {
         doInTransaction(() -> {
+            this.counter = sourceDao.getByMetrikaId(Counter.class, subRequestParser.ids);
             this.source = sourceDao
                     .createOrFetchSourceFromData(subRequestParser.dimension, subRequestParser.parentData);
             subRequestParser.data.stream()
@@ -43,18 +46,25 @@ public class SubRequestFiller extends BaseSessionHandler {
         LocalDate entryDate = getEntryDate(entry);
         List<Double> metrics = (List) entry.get("metrics");
         IntStream.range(0, metrics.size())
-                .forEach(index -> insertEntry(goals.get(index), metrics.get(index), entryDate));
+                .filter(index -> metrics.get(index) != 0.0)
+                .mapToObj(index -> {
+                    GoalReachesSuperclass newTableRow = createTableRow();
+                    newTableRow.setGoal(goals.get(index));
+                    newTableRow.setReaches(metrics.get(index));
+                    newTableRow.setDate(entryDate);
+                    return newTableRow;
+                }).peek(this::setSourceAndCounter)
+                .peek(s -> System.out.println(" " + s + s.getReaches()))
+                .forEach(reachesDao::save);
     }
 
-    private void insertEntry(Goal goal, Double reaches, LocalDate entryDate) {
-        if (reaches == 0.0) return;
-        GoalReachesSuperclass newTableRow = reachesDao.getTableRowInstance(subRequestParser.insertTable);
-        newTableRow.setSourceSuperclass(source);
-        newTableRow.setCounter(subRequestParser.counter);
-        newTableRow.setDate(entryDate);
-        newTableRow.setReaches(reaches);
-        newTableRow.setGoal(goal);
-        reachesDao.save(newTableRow);
+    private GoalReachesSuperclass createTableRow() {
+        return reachesDao.getTableRowInstance(subRequestParser.insertTable);
+    }
+
+    private void setSourceAndCounter(GoalReachesSuperclass tableRow) {
+        tableRow.setSourceSuperclass(source);
+        tableRow.setCounter(counter);
     }
 
     private LocalDate getEntryDate(Map<String, Object> entry) {
@@ -63,7 +73,7 @@ public class SubRequestFiller extends BaseSessionHandler {
 
     private List<Goal> mapGoalIdsToGoals() {
         return doInTransaction(() -> subRequestParser.goalIds.stream()
-                    .map(goalDao::getByMetrikaId)
+                    .map(metrikaId -> sourceDao.getByMetrikaId(Goal.class, metrikaId))
                         .collect(Collectors.toList())
         );
     }

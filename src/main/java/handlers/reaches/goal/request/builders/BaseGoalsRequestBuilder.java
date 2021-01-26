@@ -15,7 +15,7 @@ public abstract class BaseGoalsRequestBuilder  {
 
     private final static int REQUEST_LIMIT = 100_000;
     private final static int REQUEST_BATCH_SIZE = 15;
-    private final static LocalDate MIN_FILL_DATE = LocalDate.parse("2015-01-01");
+    private final static LocalDate MIN_FILL_DATE = LocalDate.parse("2018-01-01");
 
     private final Counter counter;
     private final String dimension;
@@ -68,10 +68,10 @@ public abstract class BaseGoalsRequestBuilder  {
         StringBuilder requestBuilder = new StringBuilder();
         requestBuilder.append(counter.getMetrikaId())
                 .append("&metrics=").append(goalsRequest)
-                .append("&dimensions=ym:s:lastsign").append(dimension).append(",ym:s:datePeriodday")
+                .append("&dimensions=").append(dimension).append(",ym:s:datePeriodday")
                 .append("&group=day").append("&limit=").append(REQUEST_LIMIT)
                 .append("&date1=").append(fillStartDate)
-                .append("&date2=").append("2021-01-24");
+                .append("&date2=").append("2021-01-25");
         return requestBuilder.toString();
     }
 

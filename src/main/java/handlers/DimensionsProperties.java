@@ -1,4 +1,4 @@
-package handlers.requestparsers;
+package handlers;
 
 import entity.goal.*;
 import entity.source.*;
@@ -17,6 +17,16 @@ public class DimensionsProperties {
         registry.put("ym:s:lastsignSearchPhrase", SearchPhrase.class);
         registry.put("ym:s:lastsignSocialNetwork", SocialNetwork.class);
         registry.put("ym:s:lastsignTrafficSource", TrafficSource.class);
+    }
+
+    public final static Map<Class<? extends SourceSuperclass>, String> sourceToDimensionStringRegistry = new HashMap<>();
+    static {
+        sourceToDimensionStringRegistry.put(AdvEngine.class, "ym:s:lastsignAdvEngine");
+        sourceToDimensionStringRegistry.put(ReferralSource.class, "ym:s:lastsignReferalSource");
+        sourceToDimensionStringRegistry.put(SearchEngine.class, "ym:s:lastsignSearchEngineRoot");
+        sourceToDimensionStringRegistry.put(SearchPhrase.class, "ym:s:lastsignSearchPhrase");
+        sourceToDimensionStringRegistry.put(SocialNetwork.class, "ym:s:lastsignSocialNetwork");
+        sourceToDimensionStringRegistry.put(TrafficSource.class, "ym:s:lastsignTrafficSource");
     }
 
     public final static Map<Class<? extends SourceSuperclass>, Class<? extends GoalReachesSuperclass>>

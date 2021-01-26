@@ -3,12 +3,11 @@ package handlers.reaches.goal;
 import dao.GoalDao;
 import dao.SourceDao;
 import entity.goal.GoalReachesSuperclass;
-import entity.goal.SearchEngineGoalReaches;
 import entity.main.Goal;
 import entity.source.SourceSuperclass;
 import handlers.BaseSessionHandler;
 import handlers.requestparsers.ByTimeRequestParser;
-import handlers.requestparsers.DimensionsProperties;
+import handlers.DimensionsProperties;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;

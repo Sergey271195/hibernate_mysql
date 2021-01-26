@@ -2,6 +2,9 @@ package handlers.requestparsers;
 
 import entity.ApplicationProperties;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +40,19 @@ public class DrilldownRequestParser extends QueryRequestParser {
         return subRequestBuilder.toString();
     }
 
+    private String encodeValue(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString()).replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("UNSUPPORTED ENCODING: " + e.getMessage());
+            return value;
+        }
+    }
+
     private Map<String, Object> appendParentToSubRequest(Map dimension) {
         Map newMap = new HashMap();
         String parentIdName = returnDimensionIdName(dimension);
-        String subRequest = subRequestBase + "&parent_id=" + "[%22" +
-                parentIdName.replace(" ", "%20").replace("+", "%2B") +"%22]";
+        String subRequest = subRequestBase + "&parent_id=" + "[%22" + encodeValue(parentIdName) +"%22]";
         newMap.put("request", subRequest);
         newMap.put("dimensions", dimension);
         return newMap;

@@ -3,6 +3,7 @@ package handlers;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.w3c.dom.ls.LSOutput;
 import utils.DbConnectionFactory;
 
 import java.util.Optional;
@@ -10,7 +11,7 @@ import java.util.function.Supplier;
 
 public class BaseSessionHandler {
 
-    protected final SessionFactory sessionFactory = DbConnectionFactory.getSessionFactory();
+    protected final static SessionFactory sessionFactory = DbConnectionFactory.getSessionFactory();
 
     protected Session getSession() {
         return sessionFactory.getCurrentSession();

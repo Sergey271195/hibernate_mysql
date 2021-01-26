@@ -1,6 +1,7 @@
 package handlers.requestparsers;
 
 import entity.source.SourceSuperclass;
+import handlers.DimensionsProperties;
 import utils.StandardMethodGenerator;
 
 import java.lang.reflect.InvocationTargetException;
