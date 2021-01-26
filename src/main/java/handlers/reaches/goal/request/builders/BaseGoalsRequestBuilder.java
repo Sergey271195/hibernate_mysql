@@ -1,4 +1,4 @@
-package handlers.reaches.goal;
+package handlers.reaches.goal.request.builders;
 
 import entity.ApplicationProperties;
 import entity.main.Counter;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class GoalsRequestBuilder {
+public abstract class BaseGoalsRequestBuilder  {
 
     private final static int REQUEST_LIMIT = 100_000;
     private final static int REQUEST_BATCH_SIZE = 15;
@@ -20,7 +20,7 @@ public class GoalsRequestBuilder {
     private final Counter counter;
     private final String dimension;
 
-    public GoalsRequestBuilder(Counter counter, String dimension) {
+    public BaseGoalsRequestBuilder(Counter counter, String dimension) {
         this.counter = counter;
         this.dimension = dimension;
     }
@@ -61,17 +61,9 @@ public class GoalsRequestBuilder {
         return batches;
     }
 
-    private String buildRequest(String goalsRequest) {
-        String requestBase = buildRequestBase(goalsRequest);
-        return ApplicationProperties.JANDEX_DRILLDOWN + requestBase;
-    }
+    protected abstract String buildRequest(String goalsRequest);
 
-    private String buildStatByTimeRequest(String goalsRequest) {
-        String requestBase = buildRequestBase(goalsRequest);
-        return ApplicationProperties.JANDEX_DRILLDOWN + requestBase;
-    }
-
-    private String buildRequestBase(String goalsRequest) {
+    protected String buildRequestBase(String goalsRequest) {
         LocalDate fillStartDate = getStartDate(counter);
         StringBuilder requestBuilder = new StringBuilder();
         requestBuilder.append(counter.getMetrikaId())

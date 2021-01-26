@@ -3,8 +3,7 @@ package com.illuminator.handlers;
 import com.illuminator.BaseTest;
 import entity.main.Counter;
 import entity.main.Goal;
-import handlers.reaches.goal.BaseGoalsFiller;
-import handlers.reaches.goal.GoalsRequestBuilder;
+import handlers.reaches.goal.request.builders.DrilldownGoalsRequestBuilder;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +24,7 @@ public class GoalsRequestBuilderTest extends BaseTest {
         Set<Goal> goals_31 = createNGoals(31);
         counter.setGoals(goals_31);
 
-        List<String> goalRequest = GoalsRequestBuilder.createGoalsRequest(counter);
+        List<String> goalRequest = DrilldownGoalsRequestBuilder.createGoalsRequest(counter);
         Long goalsNumber = numberOfGoalsInRequest(goalRequest);
 
         Assert.assertEquals(goalRequest.size(), 3);
@@ -42,7 +41,7 @@ public class GoalsRequestBuilderTest extends BaseTest {
         Set<Goal> goals_30 = createNGoals(30);
         counter.setGoals(goals_30);
 
-        List<String> goalRequest = GoalsRequestBuilder.createGoalsRequest(counter);
+        List<String> goalRequest = DrilldownGoalsRequestBuilder.createGoalsRequest(counter);
         Long goalsNumber = numberOfGoalsInRequest(goalRequest);
 
         Assert.assertEquals(goalsNumber, Long.valueOf(30));
@@ -58,7 +57,7 @@ public class GoalsRequestBuilderTest extends BaseTest {
         Set<Goal> goals_29 = createNGoals(29);
         counter.setGoals(goals_29);
 
-        List<String> goalRequest = GoalsRequestBuilder.createGoalsRequest(counter);
+        List<String> goalRequest = DrilldownGoalsRequestBuilder.createGoalsRequest(counter);
         Long goalsNumber = numberOfGoalsInRequest(goalRequest);
 
         Assert.assertEquals(goalRequest.size(), 2);
@@ -75,7 +74,7 @@ public class GoalsRequestBuilderTest extends BaseTest {
         Set<Goal> goals_10 = createNGoals(10);
         counter.setGoals(goals_10);
 
-        List<String> goalRequest = GoalsRequestBuilder.createGoalsRequest(counter);
+        List<String> goalRequest = DrilldownGoalsRequestBuilder.createGoalsRequest(counter);
         Long goalsNumber = numberOfGoalsInRequest(goalRequest);
 
         Assert.assertEquals(goalRequest.size(), 1);
@@ -92,7 +91,7 @@ public class GoalsRequestBuilderTest extends BaseTest {
         Set<Goal> goals_15 = createNGoals(15);
         counter.setGoals(goals_15);
 
-        List<String> goalRequest = GoalsRequestBuilder.createGoalsRequest(counter);
+        List<String> goalRequest = DrilldownGoalsRequestBuilder.createGoalsRequest(counter);
         Long goalsNumber = numberOfGoalsInRequest(goalRequest);
 
         Assert.assertEquals(goalRequest.size(), 1);
@@ -108,7 +107,7 @@ public class GoalsRequestBuilderTest extends BaseTest {
 
         Set<Goal> goals_0 = createNGoals(0);
         counter.setGoals(goals_0);
-        List<String> goalRequest = GoalsRequestBuilder.createGoalsRequest(counter);
+        List<String> goalRequest = DrilldownGoalsRequestBuilder.createGoalsRequest(counter);
 
         Assert.assertNull(goalRequest);
 
@@ -123,7 +122,7 @@ public class GoalsRequestBuilderTest extends BaseTest {
         Set<Goal> goals_18 = createNGoals(18);
         counter.setGoals(goals_18);
 
-        List<String> goalRequest = GoalsRequestBuilder.createGoalsRequest(counter);
+        List<String> goalRequest = DrilldownGoalsRequestBuilder.createGoalsRequest(counter);
         Long goalsNumber = numberOfGoalsInRequest(goalRequest);
 
         Assert.assertEquals(goalRequest.size(), 2);

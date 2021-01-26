@@ -3,6 +3,7 @@ package handlers.reaches.goal;
 import entity.main.Counter;
 import exceptions.FetchException;
 import handlers.BaseRequestHandler;
+import handlers.reaches.goal.request.builders.DrilldownGoalsRequestBuilder;
 import handlers.requestparsers.DrilldownRequestParser;
 import handlers.requestparsers.SubRequestParser;
 import processors.RequestProcessor;
@@ -18,12 +19,11 @@ public class BaseGoalsFiller extends BaseRequestHandler {
     public void fillCounter(Counter counter) {
         System.out.println("Filling Goals for counter: " + counter.getMetrikaId());
         List<String> goalsMetrikaRequest =
-                new GoalsRequestBuilder(counter, "SearchEngineRoot").createRequest();
+                new DrilldownGoalsRequestBuilder(counter, "SearchEngineRoot").createRequest();
 
         goalsMetrikaRequest.stream()
                 .filter(Objects::nonNull)
                 .map(this::getMetrikaData)
-                .filter(Objects::nonNull)
                 .map(DrilldownRequestParser::new)
                 .map(DrilldownRequestParser::createSubRequests)
                 .flatMap(List::stream)
