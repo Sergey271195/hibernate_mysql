@@ -1,28 +1,22 @@
-package handlers.reaches.goal.request.builders;
+package handlers.reaches.goal.builder;
 
-import entity.ApplicationProperties;
 import entity.main.Counter;
 import entity.main.Goal;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class BaseGoalsRequestBuilder  {
+public abstract class BaseGoalsRequestBuilder extends BaseRequestBuilder  {
 
-    private final static int REQUEST_LIMIT = 100_000;
     private final static int REQUEST_BATCH_SIZE = 15;
-    private final static LocalDate MIN_FILL_DATE = LocalDate.parse("2018-01-01");
 
     private final Counter counter;
-    private final String dimension;
 
-    public BaseGoalsRequestBuilder(Counter counter, String dimension) {
+    public BaseGoalsRequestBuilder(Counter counter) {
         this.counter = counter;
-        this.dimension = dimension;
     }
 
     public List<String> createRequest() {
@@ -62,23 +56,5 @@ public abstract class BaseGoalsRequestBuilder  {
     }
 
     protected abstract String buildRequest(String goalsRequest);
-
-    protected String buildRequestBase(String goalsRequest) {
-        LocalDate fillStartDate = getStartDate(counter);
-        StringBuilder requestBuilder = new StringBuilder();
-        requestBuilder.append(counter.getMetrikaId())
-                .append("&metrics=").append(goalsRequest)
-                .append("&dimensions=").append(dimension).append(",ym:s:datePeriodday")
-                .append("&group=day").append("&limit=").append(REQUEST_LIMIT)
-                .append("&date1=").append(fillStartDate)
-                .append("&date2=").append("2021-01-25");
-        return requestBuilder.toString();
-    }
-
-    private static LocalDate getStartDate(Counter counter) {
-        return counter.getCreationDate().compareTo(MIN_FILL_DATE) > 0
-                ? counter.getCreationDate()
-                : MIN_FILL_DATE;
-    }
 
 }

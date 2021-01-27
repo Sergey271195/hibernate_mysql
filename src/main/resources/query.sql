@@ -1,13 +1,13 @@
-id = 104
+id = 102
 
-//SEARCH ENGINE
+/*SEARCH ENGINE*/
 WITH r AS (
     SELECT
         sum(reaches) as count,
         goalid,
         sourceid
     FROM search_engine_goal
-    WHERE counterid = 104
+    WHERE counterid = 102
     GROUP BY goalid, sourceid
 ) SELECT
     r.count,
@@ -17,7 +17,7 @@ FROM r LEFT JOIN goal a
 ON r.goalId = a.id
 LEFT JOIN search_engine s ON r.sourceid = s.id ORDER BY goal_name, r.count DESC;
 
-//ADV ENGINE
+/*ADV ENGINE*/
 
 WITH r AS (
     SELECT
@@ -25,7 +25,7 @@ WITH r AS (
         goalid,
         sourceid
     FROM adv_engine_goal
-    WHERE counterid = 104
+    WHERE counterid = 102
     GROUP BY goalid, sourceid
 ) SELECT
     r.count,
@@ -35,7 +35,7 @@ FROM r LEFT JOIN goal a
 ON r.goalId = a.id
 LEFT JOIN adv_engine s ON r.sourceid = s.id ORDER BY goal_name, r.count DESC;
 
-//SOCIAL NETWORK
+/*SOCIAL NETWORK*/
 
 WITH r AS (
     SELECT
@@ -43,7 +43,7 @@ WITH r AS (
         goalid,
         sourceid
     FROM soc_network_goal
-    WHERE counterid = 104
+    WHERE counterid = 102
     GROUP BY goalid, sourceid
 ) SELECT
     r.count,
@@ -53,7 +53,7 @@ FROM r LEFT JOIN goal a
 ON r.goalId = a.id
 LEFT JOIN soc_network s ON r.sourceid = s.id ORDER BY goal_name, r.count DESC;
 
-//TRAFFIC_SOURCE
+/*TRAFFIC_SOURCE*/
 
 WITH r AS (
     SELECT
@@ -61,7 +61,7 @@ WITH r AS (
         goalid,
         sourceid
     FROM traff_source_goal
-    WHERE counterid = 104
+    WHERE counterid = 102
     GROUP BY goalid, sourceid
 ) SELECT
     r.count,
@@ -71,7 +71,7 @@ FROM r LEFT JOIN goal a
 ON r.goalId = a.id
 LEFT JOIN traff_source s ON r.sourceid = s.id ORDER BY goal_name, r.count DESC;
 
-//REFERRAL_SOURCE
+/*REFERRAL_SOURCE*/
 
 WITH r AS (
     SELECT
@@ -79,7 +79,7 @@ WITH r AS (
         goalid,
         sourceid
     FROM ref_source_goal
-    WHERE counterid = 104
+    WHERE counterid = 102
     GROUP BY goalid, sourceid
 ) SELECT
     r.count,
@@ -89,7 +89,7 @@ FROM r LEFT JOIN goal a
 ON r.goalId = a.id
 LEFT JOIN ref_source s ON r.sourceid = s.id ORDER BY goal_name, r.count DESC;
 
-//SEARCH_PHRASE
+/*SEARCH_PHRASE*/
 
 WITH r AS (
     SELECT
@@ -97,7 +97,7 @@ WITH r AS (
         goalid,
         sourceid
     FROM search_phrase_goal
-    WHERE counterid = 104
+    WHERE counterid = 102
     GROUP BY goalid, sourceid
 ) SELECT
     r.count,
@@ -113,7 +113,7 @@ WITH r AS (
         sum(reaches) as count,
         goalid
     FROM search_phrase_goal
-    WHERE counterid = 104
+    WHERE counterid = 102
     GROUP BY goalid
 ) SELECT
     r.count,

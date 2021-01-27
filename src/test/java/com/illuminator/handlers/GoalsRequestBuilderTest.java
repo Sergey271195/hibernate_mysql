@@ -3,7 +3,7 @@ package com.illuminator.handlers;
 import com.illuminator.BaseTest;
 import entity.main.Counter;
 import entity.main.Goal;
-import handlers.reaches.goal.request.builders.DrilldownGoalsRequestBuilder;
+import handlers.reaches.goal.builder.DrilldownGoalsRequestBuilder;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 

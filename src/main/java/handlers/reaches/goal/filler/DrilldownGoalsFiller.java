@@ -1,9 +1,9 @@
-package handlers.reaches.goal.reuqest.fillers;
+package handlers.reaches.goal.filler;
 
 import entity.main.Counter;
 import entity.source.SourceSuperclass;
 import handlers.DimensionsProperties;
-import handlers.reaches.goal.request.builders.DrilldownGoalsRequestBuilder;
+import handlers.reaches.goal.builder.DrilldownGoalsRequestBuilder;
 import handlers.requestparsers.DrilldownRequestParser;
 import handlers.requestparsers.SubRequestParser;
 import processors.RequestProcessor;
@@ -11,14 +11,14 @@ import processors.RequestProcessor;
 import javax.persistence.NoResultException;
 import java.util.*;
 
-public class DrilldownGoalsFiller extends BaseFiller {
+public class DrilldownGoalsFiller extends RetryRequestHandler {
 
     public DrilldownGoalsFiller(RequestProcessor requestProcessor) {
         super(requestProcessor);
     }
 
     @Override
-    protected void fillForSource(Counter counter, Class<? extends SourceSuperclass> source) {
+    protected void handleCounterForSource(Counter counter, Class<? extends SourceSuperclass> source) {
 
         System.out.println("FILLING GOALS FOR COUNTER: " + counter.getMetrikaId());
 

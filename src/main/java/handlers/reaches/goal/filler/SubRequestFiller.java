@@ -1,7 +1,5 @@
-package handlers.reaches.goal.reuqest.fillers;
+package handlers.reaches.goal.filler;
 
-import dao.CounterDao;
-import dao.GoalDao;
 import dao.ReachesDao;
 import dao.SourceDao;
 import entity.goal.GoalReachesSuperclass;

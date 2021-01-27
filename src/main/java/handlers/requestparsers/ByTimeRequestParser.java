@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ByTimeRequestParser extends DrilldownRequestParser {
+public class ByTimeRequestParser extends SubRequestParser {
 
     public final List<LocalDate> timeIntervals;
     public final List<Map<String, List>> data;

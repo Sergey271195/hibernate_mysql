@@ -1,35 +1,29 @@
-package handlers.reaches.goal.reuqest.fillers;
+package handlers.reaches.goal.filler;
 
-import entity.EntityClassRegistry;
 import entity.main.Counter;
 import entity.source.*;
 import exceptions.FetchException;
 import handlers.BaseRequestHandler;
-import handlers.reaches.goal.request.builders.DrilldownGoalsRequestBuilder;
-import handlers.requestparsers.DrilldownRequestParser;
-import handlers.requestparsers.SubRequestParser;
 import processors.RequestProcessor;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-public abstract class BaseFiller extends BaseRequestHandler {
+public abstract class RetryRequestHandler extends BaseRequestHandler {
 
     final static int ATTEMPTS_NUMBER = 5;
 
-    public BaseFiller(RequestProcessor requestProcessor) {
+    public RetryRequestHandler(RequestProcessor requestProcessor) {
         super(requestProcessor);
     }
 
-
-    public void fill(Counter counter) {
-        fillForSource(counter, SearchPhrase.class);
+    public void handleCounter(Counter counter) {
+        handleCounterForSource(counter, AdvEngine.class);
         //EntityClassRegistry.ENTITY_SOURCE_CLASS_REGISTRY.stream()
         //        .forEach(source -> fillForSource(counter, source));
     }
 
-    protected abstract void fillForSource(Counter counter, Class<? extends SourceSuperclass> source);
+    protected abstract void handleCounterForSource(Counter counter, Class<? extends SourceSuperclass> source);
 
     protected Map<String, Object> getDataWithAttempts(String url) {
         try {
