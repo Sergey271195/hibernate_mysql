@@ -19,7 +19,6 @@ public class QueryRequestParser {
     public final Long ids;
 
     public QueryRequestParser(Map<String, Object> query) {
-        System.out.println(query);
         fillStartDate = getfillStartDate(query);
         fillEndDate = getfillEndDate(query);
         metrics = (List) query.get("metrics");

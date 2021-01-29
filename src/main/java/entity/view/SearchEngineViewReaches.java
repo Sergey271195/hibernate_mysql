@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(
         name = "search_engine_views",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date", "counterid"})
 )
 public class SearchEngineViewReaches extends ReachesSuperclass<SearchEngine> {
 

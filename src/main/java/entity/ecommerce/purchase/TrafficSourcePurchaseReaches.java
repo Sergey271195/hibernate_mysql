@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(
         name = "traff_source_purchases",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date", "counterid"})
 )
 public class TrafficSourcePurchaseReaches extends ReachesSuperclass<TrafficSource> {
 

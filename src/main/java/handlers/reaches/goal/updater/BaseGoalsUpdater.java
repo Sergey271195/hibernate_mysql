@@ -5,18 +5,18 @@ import entity.main.Counter;
 import entity.source.SourceSuperclass;
 import handlers.DimensionsProperties;
 import handlers.reaches.goal.builder.ByTimeGoalsRequestBuilder;
-import handlers.reaches.goal.filler.RetryRequestHandler;
+import handlers.RetryRequestHandler;
 import handlers.requestparsers.ByTimeRequestParser;
 import processors.RequestProcessor;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class BaseUpdater extends RetryRequestHandler {
+public class BaseGoalsUpdater extends RetryRequestHandler {
 
     private final LocalDate updateDate;
 
-    public BaseUpdater(RequestProcessor requestProcessor, LocalDate updateDate) {
+    public BaseGoalsUpdater(RequestProcessor requestProcessor, LocalDate updateDate) {
         super(requestProcessor);
         this.updateDate = updateDate;
     }
@@ -27,12 +27,9 @@ public class BaseUpdater extends RetryRequestHandler {
         if (counterIsUpdated(counter, source)) return;
         getBatchedRequests(counter, source).stream()
                 .map(this::getDataWithAttempts)
-                .peek(r -> System.out.println(r))
                 .map(ByTimeRequestParser::new)
                 .map(ByTimeGoalsUpdater::new)
-                .peek(ByTimeGoalsUpdater::update)
-                .forEach(r -> System.out.println(r));
-
+                .forEach(ByTimeGoalsUpdater::update);
     }
 
     private boolean counterIsUpdated(Counter counter, Class<? extends SourceSuperclass> source) {

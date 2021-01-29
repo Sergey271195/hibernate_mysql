@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(
         name = "search_phrase_purchases",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date", "counterid"})
 )
 public class SearchPhrasePurchaseReaches extends ReachesSuperclass<SearchPhrase> {
 

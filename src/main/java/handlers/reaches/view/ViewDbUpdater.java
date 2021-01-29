@@ -1,33 +1,29 @@
-package handlers.reaches.goal.updater;
+package handlers.reaches.view;
 
-import dao.GoalReachesDao;
 import dao.SourceDao;
+import dao.ViewReachesDao;
+import entity.ReachesSuperclass;
 import entity.goal.GoalReachesSuperclass;
 import entity.main.Counter;
-import entity.main.Goal;
 import entity.source.SourceSuperclass;
 import handlers.BaseSessionHandler;
-import handlers.requestparsers.ByTimeRequestParser;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ByTimeGoalsUpdater extends BaseSessionHandler {
 
-    private final ByTimeRequestParser requestParser;
+public class ViewDbUpdater extends BaseSessionHandler {
+
+    private final ViewRequestParser requestParser;
+    private final ViewReachesDao viewReachesDao = new ViewReachesDao(sessionFactory);
     private final SourceDao sourceDao = new SourceDao(sessionFactory);
-    private final GoalReachesDao goalReachesDao = new GoalReachesDao(sessionFactory);
 
-    private SourceSuperclass source;
     private Counter counter;
-    private List<Goal> goals;
+    private SourceSuperclass source;
 
-    public ByTimeGoalsUpdater(ByTimeRequestParser requestParser) {
+    public ViewDbUpdater(ViewRequestParser requestParser) {
         this.requestParser = requestParser;
-        goals = mapGoalIdsToGoals();
     }
 
     public void update() {
@@ -42,24 +38,16 @@ public class ByTimeGoalsUpdater extends BaseSessionHandler {
         List<List<Double>> metrics = getMetriks(data);
         Map<String, String> subDimension = getDimension(data);
         this.source = sourceDao.createOrFetchSourceFromData(requestParser.dimension, subDimension);
-        IntStream.range(0, metrics.size())
+        IntStream.range(0, requestParser.insertTableList.size())
                 .filter(index -> metrics.get(index).get(0) != 0.0)
-                .mapToObj(index-> {
-                    GoalReachesSuperclass newTableRow = createTableRow();
-                    newTableRow.setGoal(goals.get(index));
+                .mapToObj(index -> {
+                    ReachesSuperclass newTableRow = createTableRowInstance(index);
                     newTableRow.setReaches(metrics.get(index).get(0));
-                    newTableRow.setDate(getEntryDate());
+                    newTableRow.setDate(requestParser.fillStartDate);
                     return newTableRow;
                 }).peek(this::setSourceAndCounter)
-                .peek(goalReachesDao::save)
+                .peek(viewReachesDao::save)
                 .forEach(r -> System.out.println(r + " " + r.getReaches() + " " + r.getDate()));
-    }
-
-    private List<Goal> mapGoalIdsToGoals() {
-        return doInTransaction(() -> requestParser.goalIds.stream()
-                .map(metrikaId -> sourceDao.getByMetrikaId(Goal.class, metrikaId))
-                .collect(Collectors.toList())
-        );
     }
 
     private List<List<Double>> getMetriks(Map<String, List> data) {
@@ -70,17 +58,13 @@ public class ByTimeGoalsUpdater extends BaseSessionHandler {
         return (Map) data.get("dimensions").get(0);
     }
 
-    private GoalReachesSuperclass createTableRow() {
-        return goalReachesDao.getTableRowInstance(requestParser.insertTable);
+    private ReachesSuperclass createTableRowInstance(int index) {
+        return viewReachesDao.getTableRowInstance(requestParser.insertTableList.get(index));
     }
 
-    private void setSourceAndCounter(GoalReachesSuperclass tableRow) {
+    private void setSourceAndCounter(ReachesSuperclass tableRow) {
         tableRow.setSourceSuperclass(source);
         tableRow.setCounter(counter);
-    }
-
-    private LocalDate getEntryDate() {
-        return requestParser.timeIntervals.get(0);
     }
 
 }

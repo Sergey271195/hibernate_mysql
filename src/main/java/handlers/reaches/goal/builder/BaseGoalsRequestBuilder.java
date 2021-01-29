@@ -2,6 +2,7 @@ package handlers.reaches.goal.builder;
 
 import entity.main.Counter;
 import entity.main.Goal;
+import handlers.BaseRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class BaseGoalsRequestBuilder extends BaseRequestBuilder  {
+public abstract class BaseGoalsRequestBuilder extends BaseRequestBuilder {
 
     private final static int REQUEST_BATCH_SIZE = 15;
 

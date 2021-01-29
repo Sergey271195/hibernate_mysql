@@ -3,9 +3,10 @@ package handlers.reaches.goal.filler;
 import entity.main.Counter;
 import entity.source.SourceSuperclass;
 import handlers.DimensionsProperties;
+import handlers.RetryRequestHandler;
 import handlers.reaches.goal.builder.DrilldownGoalsRequestBuilder;
 import handlers.requestparsers.DrilldownRequestParser;
-import handlers.requestparsers.SubRequestParser;
+import handlers.requestparsers.GoalsSubRequestParser;
 import processors.RequestProcessor;
 
 import javax.persistence.NoResultException;
@@ -30,7 +31,7 @@ public class DrilldownGoalsFiller extends RetryRequestHandler {
                 .flatMap(List::stream)
                 .map(this::getExpandedData)
                 .filter(Objects::nonNull)
-                .map(SubRequestParser::new)
+                .map(GoalsSubRequestParser::new)
                 .map(SubRequestFiller::new)
                 .forEach(SubRequestFiller::fill);
     }

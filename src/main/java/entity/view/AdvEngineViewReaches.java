@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(
         name = "adv_engine_views",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date", "counterid"})
 )
 public class AdvEngineViewReaches extends ReachesSuperclass<AdvEngine> {
 

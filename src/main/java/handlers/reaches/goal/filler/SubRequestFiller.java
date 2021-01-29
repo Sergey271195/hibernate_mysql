@@ -1,13 +1,13 @@
 package handlers.reaches.goal.filler;
 
-import dao.ReachesDao;
+import dao.GoalReachesDao;
 import dao.SourceDao;
 import entity.goal.GoalReachesSuperclass;
 import entity.main.Counter;
 import entity.main.Goal;
 import entity.source.SourceSuperclass;
 import handlers.BaseSessionHandler;
-import handlers.requestparsers.SubRequestParser;
+import handlers.requestparsers.GoalsSubRequestParser;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,14 +17,14 @@ import java.util.stream.IntStream;
 
 public class SubRequestFiller extends BaseSessionHandler {
 
-    private final SubRequestParser subRequestParser;
+    private final GoalsSubRequestParser subRequestParser;
     private final SourceDao sourceDao = new SourceDao(sessionFactory);
-    private final ReachesDao reachesDao = new ReachesDao(sessionFactory);
+    private final GoalReachesDao goalReachesDao = new GoalReachesDao(sessionFactory);
     private final List<Goal> goals;
     private SourceSuperclass source;
     private Counter counter;
 
-    public SubRequestFiller(SubRequestParser subRequestParser) {
+    public SubRequestFiller(GoalsSubRequestParser subRequestParser) {
         this.subRequestParser = subRequestParser;
         this.goals = mapGoalIdsToGoals();
     }
@@ -53,11 +53,11 @@ public class SubRequestFiller extends BaseSessionHandler {
                     return newTableRow;
                 }).peek(this::setSourceAndCounter)
                 .peek(s -> System.out.println(" " + s + s.getReaches()))
-                .forEach(reachesDao::save);
+                .forEach(goalReachesDao::save);
     }
 
     private GoalReachesSuperclass createTableRow() {
-        return reachesDao.getTableRowInstance(subRequestParser.insertTable);
+        return goalReachesDao.getTableRowInstance(subRequestParser.insertTable);
     }
 
     private void setSourceAndCounter(GoalReachesSuperclass tableRow) {

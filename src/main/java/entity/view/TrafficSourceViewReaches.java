@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(
         name = "traff_source_views",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date", "counterid"})
 )
 public class TrafficSourceViewReaches extends ReachesSuperclass<TrafficSource> {
 

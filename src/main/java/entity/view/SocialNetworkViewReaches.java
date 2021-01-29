@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(
         name = "social_network_views",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date", "counterid"})
 )
 public class SocialNetworkViewReaches extends ReachesSuperclass<SocialNetwork> {
 

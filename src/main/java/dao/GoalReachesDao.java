@@ -5,8 +5,8 @@ import org.hibernate.SessionFactory;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class ReachesDao extends GenericDao {
-    public ReachesDao(SessionFactory sessionFactory) {
+public class GoalReachesDao extends GenericDao {
+    public GoalReachesDao(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 

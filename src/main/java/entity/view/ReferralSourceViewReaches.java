@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(
         name = "ref_source_views",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"sourceid", "date", "counterid"})
 )
 public class ReferralSourceViewReaches extends ReachesSuperclass<ReferralSource> {
 

@@ -1,7 +1,7 @@
 import dao.CounterDao;
 import entity.main.Counter;
-import handlers.reaches.goal.filler.DrilldownGoalsFiller;
-import handlers.reaches.goal.updater.BaseUpdater;
+import handlers.reaches.goal.updater.BaseGoalsUpdater;
+import handlers.reaches.view.ViewUpdater;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -27,6 +27,8 @@ public class Entrypoint {
         SessionFactory sessionFactory = DbConnectionFactory.getSessionFactory();
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
+
+        CounterDao counterDao = new CounterDao(sessionFactory);
         //54131236L Вектор плюс
         //23258257L Титан
         //62401888L Alleri
@@ -35,23 +37,24 @@ public class Entrypoint {
         //39578050L Ив силикат
         //20548771L Иваново Принт
 
+        //FOR FILL
+
         //62111218L, 49911565L, 29736370L???, 24596720L
-        List<Long> forUpdate = List.of(54131236L); //
+        //List<Long> forUpdate = List.of(62111218L, 49911565L, 29736370L, 24596720L, 26059395L, 24332956L, 57391372L);
         //DrilldownGoalsFiller bgf = new DrilldownGoalsFiller(requestProcessor);
-        BaseUpdater bgf = new BaseUpdater(requestProcessor, LocalDate.now().minusDays(2));
-        for (Long id: forUpdate) {
-            Counter counter = new CounterDao(sessionFactory).getByMetrikaId(Counter.class, id);
-            bgf.handleCounter(counter);
-        }
+        //for (Long id: forUpdate) {
+        //    Counter counter = new CounterDao(sessionFactory).getByMetrikaId(Counter.class, id);
+        //    bgf.handleCounter(counter);
+        //}
+
+        //FOR UPDATE
+
+        List<Counter> forUpdate = counterDao.getAll();
+        //BaseGoalsUpdater bgf = new BaseGoalsUpdater(requestProcessor, LocalDate.now().minusDays(1));
+        ViewUpdater vu = new ViewUpdater(requestProcessor, LocalDate.now().minusDays(2));
+        forUpdate.stream()
+                .forEach(vu::handleCounter);
         transaction.commit();
-
-        //FOR GOALS UPDATES
-        /*GoalFiller filler = new GoalFiller(requestProcessor);
-        filler.fill();*/
-
-        //FOR COUNTERS UPDATES
-        /*CounterHandler counterHandler = new CounterHandler(requestProcessor);
-        counterHandler.refreshCounters();*/
 
     }
 

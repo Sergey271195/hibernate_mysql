@@ -28,7 +28,7 @@ public class DrilldownGoalsRequestBuilder extends BaseGoalsRequestBuilder {
     private void setDataForRequestBase(String goalsRequest) {
         setCounter(counter);
         setDimension(dimension + ",ym:s:datePeriodday");
-        setEndingDate(LocalDate.parse("2021-01-25"));
+        setEndingDate(LocalDate.parse("2021-01-24"));
         setStartingDate(getStartDate(counter));
         setMetrics(goalsRequest);
     }
