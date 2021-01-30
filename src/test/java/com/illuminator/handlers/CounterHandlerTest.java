@@ -1,7 +1,7 @@
 package com.illuminator.handlers;
 
 import com.illuminator.BaseTest;
-import entity.main.Counter;
+import com.illuminator.entity.main.Counter;
 import org.junit.jupiter.api.Test;
 
 public class CounterHandlerTest extends BaseTest {
