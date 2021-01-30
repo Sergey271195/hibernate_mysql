@@ -34,7 +34,10 @@ public class FetcherImpl implements Fetchable {
                         .proxy(ProxySelector.getDefault())
                         .build()
                         .send(request, HttpResponse.BodyHandlers.ofString());
-                System.out.println("RESPONSE STATUS CODE: " + response.statusCode());
+                if (response.statusCode() != 200) {
+                    System.out.println("RESPONSE STATUS CODE: " + response.statusCode());
+                    System.out.println(response.body());
+                }
                 return response.body();
             } catch (InterruptedException | IOException err) {
                 throw new FetchException("Exception while fetching response data" , err);

@@ -1,7 +1,6 @@
-package handlers.reaches.view;
+package handlers.reaches.view.update;
 
 import entity.ReachesSuperclass;
-import entity.goal.GoalReachesSuperclass;
 import entity.main.Counter;
 import entity.source.SourceSuperclass;
 import handlers.DimensionsProperties;
@@ -10,34 +9,17 @@ import processors.RequestProcessor;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
-public class ViewUpdater extends RetryRequestHandler {
+public abstract class BaseViewUpdater extends RetryRequestHandler {
 
-    private final LocalDate updateDate;
+    public final LocalDate updateDate;
 
-    public ViewUpdater(RequestProcessor requestProcessor, LocalDate updateDate) {
+    public BaseViewUpdater(RequestProcessor requestProcessor, LocalDate updateDate) {
         super(requestProcessor);
         this.updateDate = updateDate;
     }
 
-    @Override
-    protected void handleCounterForSource(Counter counter, Class<? extends SourceSuperclass> source) {
-        if (counterIsUpdated(counter,source)) return;
-        String request = getRequest(counter, source);
-        Map<String, Object> response = getDataWithAttempts(request);
-        ViewRequestParser parser = new ViewRequestParser(response);
-        ViewDbUpdater updater = new ViewDbUpdater(parser);
-        updater.update();
-    }
-
-    private String getRequest(Counter counter, Class<? extends SourceSuperclass> source) {
-        String dimensionString = DimensionsProperties.sourceToDimensionStringRegistry.get(source);
-        String request = new ViewRequestBuilder(counter, dimensionString, updateDate).buildRequest();
-        return request;
-    }
-
-    private boolean counterIsUpdated(Counter counter, Class<? extends SourceSuperclass> source) {
+    protected boolean counterIsUpdated(Counter counter, Class<? extends SourceSuperclass> source) {
         Class<? extends ReachesSuperclass> insertTable =
                 DimensionsProperties.viewInsertTableRegistry.get(source);
         List result = doInTransaction(() ->
@@ -55,5 +37,4 @@ public class ViewUpdater extends RetryRequestHandler {
         System.out.println("VIEWS | COUNTER: " + counter.getMetrikaId() + " SOURCE: " + source.getSimpleName() + " ALREADY UPDATED.");
         return true;
     }
-
 }

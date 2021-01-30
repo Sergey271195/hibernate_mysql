@@ -1,6 +1,4 @@
-package handlers.reaches.view;
-
-import java.lang.Object;
+package handlers.reaches.view.parser;
 
 import entity.ReachesSuperclass;
 import handlers.DimensionsProperties;
@@ -10,15 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ViewRequestParser extends QueryRequestParser {
+public class BaseViewParser extends QueryRequestParser {
 
     public List<Class<? extends ReachesSuperclass>> insertTableList;
-    public final List<Map<String, List>> data;
+    public final List<Map<String, Object>> data;
 
-    public ViewRequestParser(Map<String, Object> responseData) {
-        super((Map) responseData.get("query"));
+    public BaseViewParser(Map<String, Object> extendedData) {
+        super((Map) extendedData.get("query"));
+        data = (List) extendedData.get("data");
         insertTableList = mapMetricsToInsertTables();
-        data = (List) responseData.get("data");
     }
 
     private List<Class<? extends ReachesSuperclass>> mapMetricsToInsertTables() {
@@ -27,7 +25,4 @@ public class ViewRequestParser extends QueryRequestParser {
                 .map(map -> (Class<? extends ReachesSuperclass>) map.get(dimension))
                 .collect(Collectors.toList());
     }
-
-
-
 }

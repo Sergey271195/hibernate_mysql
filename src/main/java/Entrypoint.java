@@ -1,7 +1,6 @@
 import dao.CounterDao;
 import entity.main.Counter;
-import handlers.reaches.goal.updater.BaseGoalsUpdater;
-import handlers.reaches.view.ViewUpdater;
+import handlers.reaches.view.update.ViewUpdateHandler;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -28,6 +27,13 @@ public class Entrypoint {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
 
+        /*try {
+            Map r = requestProcessor.process("https://api-metrika.yandex.net/stat/v1/data/drilldown?ids=20548771&metrics=ym:s:visits&dimensions=ym:s:lastsignSearchPhrase&group=day&limit=100000&date1=2021-01-29&date2=2021-01-29");
+            System.out.println(r);
+        } catch (FetchException e) {
+            e.printStackTrace();
+        }*/
+
         CounterDao counterDao = new CounterDao(sessionFactory);
         //54131236L Вектор плюс
         //23258257L Титан
@@ -51,7 +57,7 @@ public class Entrypoint {
 
         List<Counter> forUpdate = counterDao.getAll();
         //BaseGoalsUpdater bgf = new BaseGoalsUpdater(requestProcessor, LocalDate.now().minusDays(1));
-        ViewUpdater vu = new ViewUpdater(requestProcessor, LocalDate.now().minusDays(2));
+        ViewUpdateHandler vu = new ViewUpdateHandler(requestProcessor, LocalDate.now().minusDays(1));
         forUpdate.stream()
                 .forEach(vu::handleCounter);
         transaction.commit();

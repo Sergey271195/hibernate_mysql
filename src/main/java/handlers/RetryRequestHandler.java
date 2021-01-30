@@ -4,8 +4,8 @@ import entity.EntityClassRegistry;
 import entity.main.Counter;
 import entity.source.*;
 import exceptions.FetchException;
-import handlers.BaseRequestHandler;
 import handlers.reaches.goal.updater.BaseGoalsUpdater;
+import handlers.reaches.view.update.BaseViewUpdater;
 import processors.RequestProcessor;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public abstract class RetryRequestHandler extends BaseRequestHandler {
     protected abstract void handleCounterForSource(Counter counter, Class<? extends SourceSuperclass> source);
 
     protected Map<String, Object> getDataWithAttempts(String url) {
-        int ATTEMPTS = this.getClass() == BaseGoalsUpdater.class
+        int ATTEMPTS = (this instanceof BaseGoalsUpdater || this instanceof BaseViewUpdater)
                 ? ATTEMPTS_NUMBER_FOR_UPDATE : ATTEMPTS_NUMBER_FOR_FILL;
         try {
             Map<String, Object> response = null;
@@ -38,7 +38,7 @@ public abstract class RetryRequestHandler extends BaseRequestHandler {
                 List responseData = (List) response.get("data");
                 if (!responseData.isEmpty()) return response;
             }
-            System.out.println("FAILED TO LOAD DATA FOR: " + url );
+            System.out.println("EMPTY RESPONSE DATA FOR " + ATTEMPTS + " ATTEMPTS! \nURL: " + url );
             return response;
         } catch (FetchException | java.lang.NullPointerException err) {
             System.out.println("[ERROR WHILE FETCHING DATA FOR URL] " + url + ".\n" + err);

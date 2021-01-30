@@ -1,29 +1,22 @@
-package handlers.reaches.view;
+package handlers.reaches.view.dbupdate;
 
 import dao.SourceDao;
 import dao.ViewReachesDao;
 import entity.ReachesSuperclass;
-import entity.goal.GoalReachesSuperclass;
 import entity.main.Counter;
 import entity.source.SourceSuperclass;
 import handlers.BaseSessionHandler;
+import handlers.reaches.view.parser.BaseViewParser;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
 
-public class ViewDbUpdater extends BaseSessionHandler {
+public class DbViewUpdater extends BaseDbViewUpdater {
 
-    private final ViewRequestParser requestParser;
-    private final ViewReachesDao viewReachesDao = new ViewReachesDao(sessionFactory);
-    private final SourceDao sourceDao = new SourceDao(sessionFactory);
-
-    private Counter counter;
-    private SourceSuperclass source;
-
-    public ViewDbUpdater(ViewRequestParser requestParser) {
-        this.requestParser = requestParser;
+    public DbViewUpdater(BaseViewParser requestParser) {
+        super(requestParser);
     }
 
     public void update() {
@@ -34,7 +27,7 @@ public class ViewDbUpdater extends BaseSessionHandler {
         });
     }
 
-    private void updateForDimension(Map<String, List> data) {
+    private void updateForDimension(Map<String, Object> data) {
         List<List<Double>> metrics = getMetriks(data);
         Map<String, String> subDimension = getDimension(data);
         this.source = sourceDao.createOrFetchSourceFromData(requestParser.dimension, subDimension);
@@ -50,21 +43,13 @@ public class ViewDbUpdater extends BaseSessionHandler {
                 .forEach(r -> System.out.println(r + " " + r.getReaches() + " " + r.getDate()));
     }
 
-    private List<List<Double>> getMetriks(Map<String, List> data) {
-        return data.get("metrics");
+    private List<List<Double>> getMetriks(Map<String, Object> data) {
+        return (List) data.get("metrics");
     }
 
-    private Map<String, String> getDimension(Map<String, List> data) {
-        return (Map) data.get("dimensions").get(0);
+    private Map<String, String> getDimension(Map<String, Object> data) {
+        return (Map)((List) data.get("dimensions")).get(0);
     }
 
-    private ReachesSuperclass createTableRowInstance(int index) {
-        return viewReachesDao.getTableRowInstance(requestParser.insertTableList.get(index));
-    }
-
-    private void setSourceAndCounter(ReachesSuperclass tableRow) {
-        tableRow.setSourceSuperclass(source);
-        tableRow.setCounter(counter);
-    }
 
 }

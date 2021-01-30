@@ -44,10 +44,10 @@ public class BaseGoalsUpdater extends RetryRequestHandler {
                         .getResultList()
                 );
         if (result.isEmpty()) {
-            System.out.println("UPDATING COUNTER: " + counter.getMetrikaId() + " SOURCE: " + source.getSimpleName() + "");
+            System.out.println("GOALS | UPDATING COUNTER: " + counter.getMetrikaId() + " SOURCE: " + source.getSimpleName() + "");
             return false;
         }
-        System.out.println("COUNTER: " + counter.getMetrikaId() + " SOURCE: " + source.getSimpleName() + " ALREADY UPDATED.");
+        System.out.println("GOALS | COUNTER: " + counter.getMetrikaId() + " SOURCE: " + source.getSimpleName() + " ALREADY UPDATED.");
         return true;
     }
 

@@ -25,8 +25,6 @@ public class QueryRequestParser {
         dimensionsList = (List) query.get("dimensions");
         dimension = parseDimension(dimensionsList);
         ids = (Long) ((List) query.get("ids")).get(0);
-
-        System.out.println(dimensionsList);
     }
 
     private Class<? extends SourceSuperclass> parseDimension(List<String> dimensionName) {
