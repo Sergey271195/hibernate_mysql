@@ -16,7 +16,7 @@ public class GoalsSubRequestParser extends QueryRequestParser {
     public final List<Long> goalIds;
 
     public GoalsSubRequestParser(Map<String, Object> expandedData) {
-        super((Map) expandedData.get("query"));
+        super((Map) expandedData.get("com/illuminator/spring/query"));
         this.data = (List) expandedData.get("data");
         this.parentData = (Map) expandedData.get("dimensions");
         this.insertTable = DimensionsProperties.insertTableRegistry.get(dimension);

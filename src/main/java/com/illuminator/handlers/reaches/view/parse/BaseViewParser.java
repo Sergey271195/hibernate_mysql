@@ -14,7 +14,7 @@ public class BaseViewParser extends QueryRequestParser {
     public final List<Map<String, Object>> data;
 
     public BaseViewParser(Map<String, Object> extendedData) {
-        super((Map) extendedData.get("query"));
+        super((Map) extendedData.get("com/illuminator/spring/query"));
         data = (List) extendedData.get("data");
         insertTableList = mapMetricsToInsertTables();
     }

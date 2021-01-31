@@ -3,6 +3,8 @@ package com.illuminator;
 import com.illuminator.dao.CounterDao;
 import com.illuminator.entity.main.Counter;
 import com.illuminator.handlers.reaches.goal.filler.DrilldownGoalsFiller;
+import com.illuminator.handlers.reaches.goal.update.GoalUpdateHandler;
+import com.illuminator.handlers.reaches.view.update.ViewUpdateHandler;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -13,6 +15,7 @@ import com.illuminator.processors.fetcher.Fetchable;
 import com.illuminator.processors.parser.JsonParser;
 import com.illuminator.utils.DbConnectionFactory;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -63,22 +66,24 @@ public class Entrypoint {
 
         //FOR FILL
 
-        List<Long> forUpdate = List.of(
+        /*List<Long> forUpdate = List.of(
                 15070123L
         );
         DrilldownGoalsFiller bgf = new DrilldownGoalsFiller(requestProcessor);
         for (Long id: forUpdate) {
             Counter counter = new CounterDao(sessionFactory).getByMetrikaId(Counter.class, id);
             bgf.handleCounter(counter);
-        }
+        }*/
 
         //FOR UPDATE
 
-        //List<Counter> forUpdate = counterDao.getAll();
-        //GoalUpdateHandler bgf = new GoalUpdateHandler(requestProcessor, LocalDate.now().minusDays(1));
-        //ViewUpdateHandler vu = new ViewUpdateHandler(requestProcessor, LocalDate.now().minusDays(1));
-        //forUpdate.stream()
-        //        .forEach(bgf::handleCounter);
+        List<Counter> forEverydayUpdate = counterDao.getAll();
+        System.out.println(forEverydayUpdate.stream().count());
+        /*GoalUpdateHandler gu = new GoalUpdateHandler(requestProcessor, LocalDate.now().minusDays(1));
+        ViewUpdateHandler vu = new ViewUpdateHandler(requestProcessor, LocalDate.now().minusDays(1));
+        forEverydayUpdate.stream()
+                .peek(gu::handleCounter)
+                .forEach(vu::handleCounter);*/
 
         transaction.commit();
 

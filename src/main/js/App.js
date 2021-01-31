@@ -1,10 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import GoalReachesForm from "../../../frontend/src/components/GoalReachesForm";
+
 
 const App = () => {
     return(
         <div>
-            <h1>React Inside Spring</h1>
+            <GoalReachesForm />
         </div>
     );
 }

@@ -16,7 +16,7 @@ public class DrilldownRequestParser extends QueryRequestParser {
     public final String subRequestBase;
 
     public DrilldownRequestParser(Map<String, Object> responseData) {
-        super((Map) responseData.get("query"));
+        super((Map) responseData.get("com/illuminator/spring/query"));
         data = (List<Map<String, Object>>) responseData.get("data");
         subRequestBase = createSubRequestBase();
     }
