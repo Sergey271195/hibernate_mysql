@@ -12,7 +12,7 @@ const TABLE_TITLE_MAP = {
     "purchases": "Покупки" 
 }
 
-const GoalReachesForm = () => {
+const ReachesForm = () => {
 
     const [fetchedAggData, setFetchedAggData] = useState([])
     const [datePeriod, setDatePeriod] = useState({startDate: "", endDate: ""})
@@ -66,4 +66,4 @@ const GoalReachesForm = () => {
     )
 }
 
-export default GoalReachesForm
+export default ReachesForm
