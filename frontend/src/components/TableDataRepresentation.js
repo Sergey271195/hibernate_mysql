@@ -3,6 +3,7 @@ import React from 'react'
 const TableDataRepresentation = (props) => {
     return (
         <div>
+            <h2>{props.tableTitle}</h2>
             {props.data.length != 0 && 
                 <table border = "1">
                     <thead>

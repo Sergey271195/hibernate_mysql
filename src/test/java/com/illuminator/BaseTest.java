@@ -1,11 +1,11 @@
 package com.illuminator;
 
-import com.illuminator.handlers.BaseSessionHandler;
-import com.illuminator.processors.RequestProcessor;
-import com.illuminator.processors.fetcher.Fetchable;
-import com.illuminator.processors.fetcher.FetcherImpl;
-import com.illuminator.processors.parser.JsonParser;
-import com.illuminator.processors.parser.JsonParserImpl;
+import com.illuminator.db.handlers.BaseSessionHandler;
+import com.illuminator.db.processors.RequestProcessor;
+import com.illuminator.db.processors.fetcher.Fetchable;
+import com.illuminator.db.processors.fetcher.FetcherImpl;
+import com.illuminator.db.processors.parser.JsonParser;
+import com.illuminator.db.processors.parser.JsonParserImpl;
 
 public class BaseTest extends BaseSessionHandler {
 

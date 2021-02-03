@@ -17,7 +17,6 @@ const DimensionSelector = (props) => {
     }, [])
 
     const onSelect = (e) => {
-        console.log(e.target.value)
         props.setDimension(e.target.value);
     }
 

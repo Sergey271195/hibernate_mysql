@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import GoalReachesForm from "../../../frontend/src/components/GoalReachesForm";
+import ReachesForm from "../../../frontend/src/components/ReachesForm";
 
 
 const App = () => {
     return(
         <div>
-            <GoalReachesForm />
+            <ReachesForm />
         </div>
     );
 }

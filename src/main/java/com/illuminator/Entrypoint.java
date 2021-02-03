@@ -1,21 +1,17 @@
 package com.illuminator;
 
-import com.illuminator.dao.CounterDao;
-import com.illuminator.entity.main.Counter;
-import com.illuminator.handlers.reaches.goal.filler.DrilldownGoalsFiller;
-import com.illuminator.handlers.reaches.goal.update.GoalUpdateHandler;
-import com.illuminator.handlers.reaches.view.update.ViewUpdateHandler;
+import com.illuminator.db.dao.CounterDao;
+import com.illuminator.db.entity.main.Counter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import com.illuminator.processors.RequestProcessor;
-import com.illuminator.processors.parser.JsonParserImpl;
-import com.illuminator.processors.fetcher.FetcherImpl;
-import com.illuminator.processors.fetcher.Fetchable;
-import com.illuminator.processors.parser.JsonParser;
-import com.illuminator.utils.DbConnectionFactory;
+import com.illuminator.db.processors.RequestProcessor;
+import com.illuminator.db.processors.parser.JsonParserImpl;
+import com.illuminator.db.processors.fetcher.FetcherImpl;
+import com.illuminator.db.processors.fetcher.Fetchable;
+import com.illuminator.db.processors.parser.JsonParser;
+import com.illuminator.db.utils.DbConnectionFactory;
 
-import java.time.LocalDate;
 import java.util.List;
 
 

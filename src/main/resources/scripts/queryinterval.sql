@@ -1,6 +1,25 @@
 id = 102
 
 /*SEARCH ENGINE*/
+
+SELECT
+    r.count as count,
+    s.name as source_name,
+    a.name as goal_name
+FROM (
+    SELECT
+        sum(reaches) as count,
+        goalid,
+        sourceid
+    FROM search_engine_goal
+    WHERE counterid = 102 AND date BETWEEN '2021-01-25' AND '2021-01-29'
+    GROUP BY goalid, sourceid
+) r LEFT JOIN goal a
+ON r.goalId = a.id
+LEFT JOIN search_engine s ON r.sourceid = s.id ORDER BY goal_name, r.count DESC;
+
+
+
 WITH r AS (
     SELECT
         sum(reaches) as count,

@@ -9,19 +9,19 @@ const CountersFetcher = (props) => {
             .then(response => response.json())
                 .then(data => {
                     setCounters(data);
-                    props.setSelectedCounter(data[0].id);
+                    props.setSelectedCounter(data[0]);
                 })
     }, [])
 
     const onSelect = (e) => {
-        props.setSelectedCounter(e.target.value);
+        props.setSelectedCounter(data[e.target.value]);
     }
 
     return (
         <select onChange = {e => onSelect(e)}>
-            {counters.map(({id, name}) => {
+            {counters.map(({id, name}, index) => {
                 return(
-                    <option key = {name} value = {id}>{name}</option>
+                    <option key = {id} value = {index}>{name}</option>
                 )
             })}
         </select>
